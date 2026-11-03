@@ -2,18 +2,10 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
 
-class LivraisonRequest extends FormRequest
+class LivraisonRequest extends ApiFormRequest
 {
-    public function authorize(): bool
-    {
-        return true;
-    }
-
     public function rules(): array
     {
         return [
@@ -22,13 +14,5 @@ class LivraisonRequest extends FormRequest
             'poids_kg' => ['required', 'numeric', 'gt:0'],
             'sens' => ['required', Rule::in(['entree', 'sortie'])],
         ];
-    }
-
-    protected function failedValidation(Validator $validator): void
-    {
-        throw new HttpResponseException(response()->json([
-            'message' => 'Donnees invalides',
-            'errors' => $validator->errors(),
-        ], 422));
     }
 }

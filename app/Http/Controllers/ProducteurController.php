@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProducteurRequest;
 use App\Http\Resources\ProducteurResource;
+use App\Http\Responses\ErreurApi;
 use App\Models\Producteur;
 use App\Services\LivraisonService;
 
@@ -45,9 +46,7 @@ class ProducteurController extends Controller
     public function destroy(Producteur $producteur)
     {
         if ($producteur->livraisons()->exists()) {
-            return response()->json([
-                'message' => 'Suppression impossible : ce producteur a des livraisons',
-            ], 409);
+            return ErreurApi::reponse('Suppression impossible : ce producteur a des livraisons', 409);
         }
 
         $producteur->delete();
