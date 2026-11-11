@@ -1,0 +1,54 @@
+<div class="page-head">
+  <div>
+    <h1>{{ id ? 'Modifier le producteur' : 'Nouveau producteur' }}</h1>
+  </div>
+</div>
+
+<div class="card form-card">
+  @if (loading()) {
+    <p class="muted">Chargement…</p>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      @if (serverError()) {
+        <div class="alert alert-error">{{ serverError() }}</div>
+      }
+
+      <div class="field">
+        <label for="nom">Nom *</label>
+        <input id="nom" type="text" formControlName="nom" placeholder="Ex. Awa Traoré" />
+        @if (form.controls.nom.touched && form.controls.nom.invalid) {
+          <small class="error">
+            @if (form.controls.nom.hasError('required')) {
+              Le nom est obligatoire.
+            } @else if (form.controls.nom.hasError('minlength')) {
+              Au moins 2 caractères.
+            } @else {
+              100 caractères maximum.
+            }
+          </small>
+        }
+        @for (m of fieldErrors()['nom'] ?? []; track m) {
+          <small class="error">{{ m }}</small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="village">Village</label>
+        <input id="village" type="text" formControlName="village" placeholder="Facultatif" />
+        @if (form.controls.village.invalid) {
+          <small class="error">100 caractères maximum.</small>
+        }
+        @for (m of fieldErrors()['village'] ?? []; track m) {
+          <small class="error">{{ m }}</small>
+        }
+      </div>
+
+      <div class="form-actions">
+        <a routerLink="/producteurs" class="btn">Annuler</a>
+        <button type="submit" class="btn btn-primary" [disabled]="saving()">
+          {{ saving() ? 'Enregistrement…' : 'Enregistrer' }}
+        </button>
+      </div>
+    </form>
+  }
+</div>

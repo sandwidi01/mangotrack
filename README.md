@@ -25,6 +25,7 @@ Projet réalisé dans le cadre de la **séance 2 « Travail de groupe »** du co
 9. [Exercices pour aller plus loin](#9-exercices-pour-aller-plus-loin)
 10. [Glossaire](#10-glossaire)
 11. [Tests automatisés](#11-tests-automatisés)
+12. [🖥️ Frontend Angular](#12-️-frontend-angular)
 
 ---
 
@@ -507,6 +508,24 @@ public function test_sortie_superieure_au_stock_409(): void
 
 - Les tests tournent sur SQLite, pas sur MySQL : le **verrou** `lockForUpdate()` (sorties simultanées, étape 7) est ignoré par SQLite et n'est donc pas prouvé par la suite. Pour le valider, lancez les mêmes tests avec une base MySQL de test (`DB_CONNECTION=mysql` et une base dédiée, jamais `mangotrack`) et testez la concurrence avec deux requêtes parallèles.
 - Pas encore d'authentification à tester (Sanctum est installé mais non branché).
+
+---
+
+## 12. 🖥️ Frontend Angular
+
+Une interface web (Angular) consomme cette API : CRUD des producteurs, liste filtrée et paginée des livraisons, affichage du stock, gestion des erreurs **422** et **409**. Elle vit dans le dossier [`frontend/`](frontend/) (branche Git `frontend`).
+
+```bash
+php artisan serve                  # terminal 1 : l'API sur http://localhost:8000
+cd frontend && npm install && npm start   # terminal 2 : l'interface sur http://localhost:4200
+```
+
+```text
+Navigateur ──► localhost:4200 (Angular) ──proxy /api──► localhost:8000 (Laravel) ──► MySQL
+```
+
+- Documentation complète du frontend : [`frontend/README.md`](frontend/README.md)
+- Publier et fusionner la branche sur GitHub : [`docs/GUIDE_GIT_GITHUB.md`](docs/GUIDE_GIT_GITHUB.md)
 
 ---
 

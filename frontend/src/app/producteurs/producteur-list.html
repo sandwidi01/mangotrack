@@ -1,0 +1,76 @@
+<div class="page-head">
+  <div>
+    <h1>Producteurs</h1>
+    <p class="muted">Les producteurs de la coopérative et leur stock actuel.</p>
+  </div>
+  <a routerLink="/producteurs/nouveau" class="btn btn-primary">+ Nouveau producteur</a>
+</div>
+
+@if (loading()) {
+  <p class="muted">Chargement…</p>
+} @else if (error()) {
+  <div class="alert alert-error">
+    {{ error() }} <button class="btn btn-small" (click)="load()">Réessayer</button>
+  </div>
+} @else if (producteurs().length === 0) {
+  <div class="empty">
+    <p>Aucun producteur pour le moment.</p>
+    <a routerLink="/producteurs/nouveau" class="btn btn-primary">Ajouter le premier</a>
+  </div>
+} @else {
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nom</th>
+          <th>Village</th>
+          <th class="num">Stock (kg)</th>
+          <th class="actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (p of producteurs(); track p.id) {
+          <tr>
+            <td class="muted">{{ p.id }}</td>
+            <td><strong>{{ p.nom }}</strong></td>
+            <td>{{ p.village || '—' }}</td>
+            <td class="num">
+              @if (stocks()[p.id] !== undefined) {
+                {{ stocks()[p.id] }}
+              } @else {
+                <span class="muted">…</span>
+              }
+            </td>
+            <td class="actions">
+              <a
+                routerLink="/livraisons"
+                [queryParams]="{ producteur: p.id }"
+                class="btn btn-small"
+                >Livraisons</a
+              >
+              <a [routerLink]="['/producteurs', p.id, 'modifier']" class="btn btn-small">Modifier</a>
+              <button class="btn btn-small btn-danger" (click)="askDelete(p)">Supprimer</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+@if (toDelete(); as p) {
+  <div class="overlay" (click)="cancelDelete()">
+    <div class="modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+      <h2>Supprimer ce producteur ?</h2>
+      <p>
+        « {{ p.nom }} » sera définitivement supprimé. Si le producteur a des livraisons, l'API
+        refusera (erreur 409).
+      </p>
+      <div class="modal-actions">
+        <button class="btn" (click)="cancelDelete()">Annuler</button>
+        <button class="btn btn-danger" (click)="confirmDelete()">Supprimer</button>
+      </div>
+    </div>
+  </div>
+}

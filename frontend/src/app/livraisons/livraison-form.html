@@ -1,0 +1,71 @@
+<div class="page-head">
+  <div><h1>Nouvelle livraison</h1></div>
+</div>
+
+<div class="card form-card">
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    @if (serverError()) {
+      <div class="alert alert-error">{{ serverError() }}</div>
+    }
+
+    <div class="field">
+      <label for="producteur">Producteur *</label>
+      <select id="producteur" formControlName="producteur">
+        <option [ngValue]="null" disabled>— Choisir —</option>
+        @for (p of producteurs(); track p.id) {
+          <option [ngValue]="p.id">{{ p.nom }}</option>
+        }
+      </select>
+      @if (form.controls.producteur.touched && form.controls.producteur.invalid) {
+        <small class="error">Choisissez un producteur.</small>
+      }
+      @for (m of fieldErrors()['producteur'] ?? []; track m) {
+        <small class="error">{{ m }}</small>
+      }
+    </div>
+
+    <div class="field">
+      <label for="variete">Variété *</label>
+      <input id="variete" type="text" formControlName="variete" placeholder="Ex. Kent, Amélie, Brooks" />
+      @if (form.controls.variete.touched && form.controls.variete.invalid) {
+        <small class="error">La variété est obligatoire (100 caractères maximum).</small>
+      }
+      @for (m of fieldErrors()['variete'] ?? []; track m) {
+        <small class="error">{{ m }}</small>
+      }
+    </div>
+
+    <div class="field">
+      <label for="poids">Poids (kg) *</label>
+      <input id="poids" type="number" step="0.01" min="0" formControlName="poids_kg" />
+      @if (form.controls.poids_kg.touched && form.controls.poids_kg.invalid) {
+        <small class="error">Le poids doit être supérieur à 0.</small>
+      }
+      @for (m of fieldErrors()['poids_kg'] ?? []; track m) {
+        <small class="error">{{ m }}</small>
+      }
+    </div>
+
+    <div class="field">
+      <span class="field-label">Sens *</span>
+      <div class="radio-group">
+        <label class="radio">
+          <input type="radio" formControlName="sens" value="entree" /> Entrée (dépôt au stock)
+        </label>
+        <label class="radio">
+          <input type="radio" formControlName="sens" value="sortie" /> Sortie (retrait du stock)
+        </label>
+      </div>
+      @for (m of fieldErrors()['sens'] ?? []; track m) {
+        <small class="error">{{ m }}</small>
+      }
+    </div>
+
+    <div class="form-actions">
+      <a routerLink="/livraisons" class="btn">Annuler</a>
+      <button type="submit" class="btn btn-primary" [disabled]="saving()">
+        {{ saving() ? 'Enregistrement…' : 'Enregistrer' }}
+      </button>
+    </div>
+  </form>
+</div>
