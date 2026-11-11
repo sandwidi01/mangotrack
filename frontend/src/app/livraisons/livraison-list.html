@@ -1,0 +1,71 @@
+<div class="page-head">
+  <div>
+    <h1>Livraisons</h1>
+    <p class="muted">Historique des entrées et sorties de mangues.</p>
+  </div>
+  <a routerLink="/livraisons/nouvelle" class="btn btn-primary">+ Nouvelle livraison</a>
+</div>
+
+<div class="toolbar">
+  <label for="filtre">Producteur</label>
+  <select id="filtre" (change)="onFilter($any($event.target).value)">
+    <option value="" [selected]="!filter()">Tous</option>
+    @for (p of producteurs(); track p.id) {
+      <option [value]="p.id" [selected]="filter() === p.id">{{ p.nom }}</option>
+    }
+  </select>
+  <span class="muted">{{ total() }} livraison(s)</span>
+</div>
+
+@if (loading()) {
+  <p class="muted">Chargement…</p>
+} @else if (error()) {
+  <div class="alert alert-error">
+    {{ error() }} <button class="btn btn-small" (click)="load()">Réessayer</button>
+  </div>
+} @else if (livraisons().length === 0) {
+  <div class="empty"><p>Aucune livraison.</p></div>
+} @else {
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Producteur</th>
+          <th>Variété</th>
+          <th>Sens</th>
+          <th class="num">Poids (kg)</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (l of livraisons(); track l.id) {
+          <tr>
+            <td class="muted">{{ l.id }}</td>
+            <td>{{ nomProducteur(l.producteur_id) }}</td>
+            <td>{{ l.variete }}</td>
+            <td>
+              <span
+                class="badge"
+                [class.badge-in]="l.sens === 'entree'"
+                [class.badge-out]="l.sens === 'sortie'"
+              >
+                {{ l.sens === 'entree' ? '↓ Entrée' : '↑ Sortie' }}
+              </span>
+            </td>
+            <td class="num">{{ l.poids_kg }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination">
+    <button class="btn btn-small" [disabled]="page() <= 1" (click)="goTo(page() - 1)">
+      ← Précédent
+    </button>
+    <span>Page {{ page() }} / {{ lastPage() }}</span>
+    <button class="btn btn-small" [disabled]="page() >= lastPage()" (click)="goTo(page() + 1)">
+      Suivant →
+    </button>
+  </div>
+}

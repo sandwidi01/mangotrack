@@ -1,0 +1,21 @@
+<header class="topbar">
+  <div class="container topbar-inner">
+    <a routerLink="/" class="brand">🥭 MangoTrack</a>
+    <nav>
+      <a routerLink="/producteurs" routerLinkActive="active">Producteurs</a>
+      <a routerLink="/livraisons" routerLinkActive="active">Livraisons</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <router-outlet />
+</main>
+
+<div class="toasts" aria-live="polite">
+  @for (t of toast.toasts(); track t.id) {
+    <div class="toast" [class.toast-error]="t.type === 'error'" (click)="toast.dismiss(t.id)">
+      {{ t.text }}
+    </div>
+  }
+</div>
